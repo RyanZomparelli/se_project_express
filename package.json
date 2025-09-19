@@ -20,7 +20,8 @@
   "homepage": "https://github.com/RyanZomparelli/se_project_express#readme",
   "dependencies": {
     "express": "^4.21.2",
-    "mongoose": "^8.9.5"
+    "mongoose": "^8.9.5",
+    "validator": "^13.15.15"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
