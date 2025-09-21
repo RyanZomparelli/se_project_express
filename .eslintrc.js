@@ -1,3 +1,6 @@
+// no-underscore-dangle: 0 means there is a linter exception for variables like _id
+// I'm using Airbnb's JavaScript style Guide in this project for linter configuration.
+
 module.exports = {
   env: {
     es2021: true,
