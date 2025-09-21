@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
   avatar: {
     required: true,
     type: String,
-    //👇 The mongoose schema field
+    // 👇 The mongoose schema field
     validate: {
-      validator: (url) => validator.isURL(url), //👈 The validator library
+      validator: (url) => validator.isURL(url), // 👈 The validator library
       message: "This is an invalid url. Please try again.",
     },
   },

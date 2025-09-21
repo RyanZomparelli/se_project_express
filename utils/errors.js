@@ -1,4 +1,4 @@
-//AS the list of errors grows, keeping them here in a designated file keeps the
+// AS the list of errors grows, keeping them here in a designated file keeps the
 // code base modular and maintainable.
 
 const BAD_REQUEST = 400;

@@ -28,8 +28,8 @@ const clothingItemSchema = new mongoose.Schema({
     ref: "user",
   },
   likes: {
-    //ObjectId is a special data type in Mongoose that JavaScript doesn't recognize
-    //so the path needs to be specified. It could alternatively be destructured like
+    // ObjectId is a special data type in Mongoose that JavaScript doesn't recognize
+    // so the path needs to be specified. It could alternatively be destructured like
     // const { ObjectId } = Schema.Types and be used here as ObjectId.
     type: [mongoose.Schema.Types.ObjectId],
     ref: "user",
