@@ -8,6 +8,21 @@ const validator = require("validator");
 /* A schema is a blueprint for the resources that are going to be saved to the database.
    mongoose uses the schema to validate documents before they're saved. */
 const userSchema = new mongoose.Schema({
+  email: {
+    required: true,
+    type: String,
+    unique: true,
+    validate: {
+      validator: (email) => validator.isEmail(email),
+      message: "This is an invalid email. Please try again.",
+    },
+  },
+  password: {
+    required: true,
+    type: String,
+    // This ensures that the user's password hash will not be returned by any search queries.
+    select: false,
+  },
   name: {
     required: true,
     type: String,
