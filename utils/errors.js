@@ -7,8 +7,11 @@ const NOT_FOUND = 404;
 
 const INTERNAL_SERVER_ERROR = 500;
 
+const DUPLICATE_EMAIL = 409;
+
 module.exports = {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  DUPLICATE_EMAIL,
 };

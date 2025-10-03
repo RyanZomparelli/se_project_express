@@ -8,6 +8,8 @@ const {
   unlikeItem,
 } = require("../controllers/clothingItems");
 
+// These routes are cumulative. The base routes in index.js specify the resources
+// like '/users' or '/items'. These routes build on top of those.
 router.get("/", getItems);
 router.post("/", createItem);
 router.delete("/:id", deleteItem);
