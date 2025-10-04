@@ -4,6 +4,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  FORBIDDEN,
 } = require("../utils/errors");
 
 const getItems = (req, res) => {
@@ -35,10 +36,23 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
+  // Get the item id first
   const { id } = req.params;
-
-  ClothingItem.findByIdAndDelete(id)
+  // Find the item before deleting it so you can compare it for authoriztion to the
+  // user currently logged in with req.user that we created in the auth middleware.
+  ClothingItem.findById(id)
     .orFail()
+    .then((item) => {
+      // Use toString() because:
+      // When you compare ObjectIds directly with ===, they might not match even
+      // if they represent the same ID. This is because: item.owner is a MongoDB ObjectId object.
+      // req.user._id is also an ObjectId object. Even if they have the same value,
+      // they're different object instances
+      if (item.owner.toString() !== req.user._id.toString()) {
+        return Promise.reject(new Error("Forbidden"));
+      }
+      return ClothingItem.findByIdAndDelete(id);
+    })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.error(err);
@@ -49,6 +63,9 @@ const deleteItem = (req, res) => {
         return res
           .status(NOT_FOUND)
           .send({ message: "Requested resource not found" });
+      }
+      if (err.message === "Forbidden") {
+        return res.status(FORBIDDEN).send({ message: err.message });
       }
       return res
         .status(INTERNAL_SERVER_ERROR)

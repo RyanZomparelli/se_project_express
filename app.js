@@ -4,6 +4,8 @@ const express = require("express");
 // ODM (Object Document Mapper) provides schema validation and DB operations.
 // Note relational data bases would use a ORM (Object Relational Mapper).
 const mongoose = require("mongoose");
+// This package will allow requests from the client to the server to be processed.
+const cors = require("cors");
 
 // internal imports
 const indexRouter = require("./routes");
@@ -23,14 +25,7 @@ mongoose
     console.error(e);
   });
 
-// Temporary middleware for user authorization to create clothingItems.
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68ce00577cab308d9b75df8a",
-  };
-  next();
-});
-
+app.use(cors());
 // Place this middleware before routes
 // Middleware to parse JSON from client when creating resources
 app.use(express.json());
