@@ -30,17 +30,17 @@ const getUsers = (req, res) => {
     });
 };
 
-const getUserById = (req, res) => {
+const getCurrentUser = (req, res) => {
   // Get userId from the url parameters like /:userId
-  const { userId } = req.params;
+  const { _id } = req.user;
 
-  User.findById(userId)
+  User.findById(_id)
     // If !user, the Mongoose orFail() method returns DocumentNotFoundError
     // instead of null. You can add your own err handling by passing it a callback
     // function but don't forget to throw the error to the catch block at the end of the function.
     .orFail()
-    // express already sends 200 codes for successfull responses but this is explicit
-    .then((user) => res.status(200).send(user))
+    // express already sends '200' codes for successfull responses but this is explicit
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
@@ -136,4 +136,38 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getUserById, createUser, login };
+const updateProfile = async (req, res) => {
+  const { _id } = req.user;
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      _id,
+      {
+        name: req.body.name,
+        avatar: req.body.avatar,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).orFail();
+    return res.status(200).send({ user });
+  } catch (err) {
+    if (err.name === "DocumentNotFoundError") {
+      return res
+        .status(NOT_FOUND)
+        .send({ message: "Requested resource not found." });
+    }
+    if (err.name === "CastError") {
+      return res.status(BAD_REQUEST).send({ message: "Invalid Data." });
+    }
+    if (err.name === "ValidationError") {
+      return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+    }
+    return res
+      .status(INTERNAL_SERVER_ERROR)
+      .send({ message: "An error has occurred on the server" });
+  }
+};
+
+module.exports = { getUsers, getCurrentUser, createUser, login, updateProfile };

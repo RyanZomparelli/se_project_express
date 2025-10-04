@@ -4,6 +4,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  FORBIDDEN,
 } = require("../utils/errors");
 
 const getItems = (req, res) => {
@@ -35,10 +36,23 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
+  // Get the item id first
   const { id } = req.params;
-
-  ClothingItem.findByIdAndDelete(id)
+  // Find the item before deleting it so you can compare it for authoriztion to the
+  // user currently logged in with req.user that we created in the auth middleware.
+  ClothingItem.findById(id)
     .orFail()
+    .then((item) => {
+      // Use toString() because:
+      // When you compare ObjectIds directly with ===, they might not match even
+      // if they represent the same ID. This is because: item.owner is a MongoDB ObjectId object.
+      // req.user._id is also an ObjectId object. Even if they have the same value,
+      // they're different object instances
+      if (item.owner.toString() !== req.user._id.toString()) {
+        return Promise.reject(new Error("Forbidden"));
+      }
+      return ClothingItem.findByIdAndDelete(id);
+    })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.error(err);
@@ -50,6 +64,9 @@ const deleteItem = (req, res) => {
           .status(NOT_FOUND)
           .send({ message: "Requested resource not found" });
       }
+      if (err.message === "Forbidden") {
+        return res.status(FORBIDDEN).send({ message: err.message });
+      }
       return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
@@ -57,12 +74,12 @@ const deleteItem = (req, res) => {
 };
 
 const likeItem = (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.user;
   // findByIdAndUpdate is a Mongoose method that takes an identifier and an object
   // with the properties that need to be updated. It can also take an optional options
   // object as a third argument
   ClothingItem.findByIdAndUpdate(
-    id,
+    _id,
     {
       // in this case, likes is the property we are updating. Likes is an array in
       // the ClothingItem schema that contains a 'set' of ObjectId's to prevent mutiple
@@ -100,10 +117,10 @@ const likeItem = (req, res) => {
 };
 
 const unlikeItem = (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.user;
 
   ClothingItem.findByIdAndUpdate(
-    id,
+    _id,
     {
       // There are other Mongo operators like $gt(grater than), $lte (less than equal to), $inc (increment) ect..
       $pull: { likes: req.user._id }, // Remove the ObjectId from the likes set.
