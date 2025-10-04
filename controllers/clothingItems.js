@@ -74,12 +74,12 @@ const deleteItem = (req, res) => {
 };
 
 const likeItem = (req, res) => {
-  const { _id } = req.user;
+  const { id } = req.params;
   // findByIdAndUpdate is a Mongoose method that takes an identifier and an object
   // with the properties that need to be updated. It can also take an optional options
   // object as a third argument
   ClothingItem.findByIdAndUpdate(
-    _id,
+    id,
     {
       // in this case, likes is the property we are updating. Likes is an array in
       // the ClothingItem schema that contains a 'set' of ObjectId's to prevent mutiple
@@ -117,10 +117,10 @@ const likeItem = (req, res) => {
 };
 
 const unlikeItem = (req, res) => {
-  const { _id } = req.user;
+  const { id } = req.params;
 
   ClothingItem.findByIdAndUpdate(
-    _id,
+    id,
     {
       // There are other Mongo operators like $gt(grater than), $lte (less than equal to), $inc (increment) ect..
       $pull: { likes: req.user._id }, // Remove the ObjectId from the likes set.

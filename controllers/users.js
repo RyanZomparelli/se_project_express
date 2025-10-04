@@ -31,7 +31,6 @@ const getUsers = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  // Get userId from the url parameters like /:userId
   const { _id } = req.user;
 
   User.findById(_id)
