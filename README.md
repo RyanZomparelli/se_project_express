@@ -135,3 +135,87 @@ const getItems = (req, res) => {
     });
 };
 ```
+
+## Project 13 Improvements!
+
+Implement Authentication, Authorization, and Profile Management for WTWR API
+
+### Overview
+
+This pull request introduces full authentication and authorization functionality to the WTWR backend, refactors user-related controllers to use JWT-based authorization, and adds several key improvements for security, API structure, and maintainability.
+
+### Authentication & Authorization
+
+- Added JWT-based authorization middleware
+
+- Implemented in middlewares/auth.js.
+
+- Extracts Bearer tokens from request headers and verifies them using jsonwebtoken.
+
+- Attaches the decoded payload to req.user for downstream controller access.
+
+- Applied the middleware to all protected routes (e.g., clothing item updates and deletions).
+
+- Removed temporary hardcoded user authorization logic from app.js.
+
+- Created a login controller
+
+- Added a login controller that authenticates users using bcrypt.
+
+- Generates JWT tokens for successfully authenticated users.
+
+- Added a new public /signin route in routes/index.js.
+
+- Extended the User model
+
+- Added email and password fields to userSchema.
+
+- Enforced unique constraint and email validation with the validator npm package.
+
+- Configured the password field with select: false to exclude hashes from query results.
+
+### User Controllers
+
+- Refactored createUser controller
+
+- Implemented password hashing with bcrypt (10 salt rounds).
+
+- Rewritten using async/await syntax for better readability and error handling.
+
+- Updated routes to include a new POST /signup endpoint for user registration.
+
+- Created updateProfile controller
+
+- Allows users to update their name and avatar fields.
+
+- Uses req.user to identify the authenticated user.
+
+- Added authorization logic to deleteItem to ensure only owners can delete their items.
+
+- Refactored getUserById → getCurrentUser
+
+- Simplified by using req.user from the JWT payload.
+
+- Ensures users can only access their own profile data.
+
+### Middleware & Config Enhancements
+
+- Added CORS support
+
+### Centralized configuration
+
+- Created utils/config.js with a temporary JWT secret key.
+
+- Added reusable HTTP status constants (including FORBIDDEN) to utils/errors.js.
+
+- Bug Fixes & Code Cleanup
+
+- Fixed controller bugs for liking cards.
+
+- Ensured protected routes correctly reference req.user.
+
+- General refactoring for consistency and readability.
+
+### Next Steps
+
+Integrate this backend with the React frontend to complete the full-stack WTWR application.
