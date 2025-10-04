@@ -1,8 +1,13 @@
 // JavaScript password hashing library
 const bcrypt = require("bcryptjs");
+// Library to generate JWT's
+const jwt = require("jsonwebtoken");
 
 // Instantiate the model to work with Mongoose methods
 const User = require("../models/user");
+
+// Temporary secret key
+const { JWT_SECRET } = require("../utils/config");
 
 // Status code variables for errors
 const {
@@ -10,6 +15,7 @@ const {
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
   DUPLICATE_EMAIL,
+  UNAUTHORIZED,
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
@@ -59,6 +65,8 @@ const createUser = async (req, res) => {
   const { email, password, name, avatar } = req.body;
   try {
     // Use the bcrypt library to hash the password entered by the user at signup.
+    // The hash() method generates a completely random character set known as a 'salt'
+    // and adds it to the password before hashing for a completely unique password hash.
     // Return's a promise.
     const hash = await bcrypt.hash(password, 10);
     // Create a user object in the MongoDB with an instance of the User model.
@@ -103,4 +111,29 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getUserById, createUser };
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      throw new Error("Missing email or password");
+    }
+    // Static method declared on the userSchema model. Returns a user if successful.
+    // Otherwise throws an error to the catch block.
+    const user = await User.findUserByCredentials(email, password);
+    // If the user is authenticated we create a JWT.
+    // The client can send this token in their requests to avoid logging back in for 7 days.
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    return res.send({ token });
+  } catch (err) {
+    console.error(err);
+    if (err.message === "Missing email or password") {
+      return res.status(BAD_REQUEST).send({ message: err.message });
+    }
+    return res.status(UNAUTHORIZED).send({ message: err.message });
+  }
+};
+
+module.exports = { getUsers, getUserById, createUser, login };
