@@ -50,7 +50,7 @@ userSchema.statics.findUserByCredentials = async function findUserByCredentials(
   password
 ) {
   // First we find a user with the mongoose method findOne() which takes an object.
-  const user = await this.findOne({ email }).select("+password"); //👈 Satisfy 'select: false' in the userSchema.
+  const user = await this.findOne({ email }).select("+password"); // 👈 Satisfy 'select: false' in the userSchema.
   // Then we make sure the user exists before checking comparing the passwords so
   // we aren't unecessarily hashing passwords.
   if (!user) {

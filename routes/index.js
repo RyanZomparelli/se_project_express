@@ -8,7 +8,9 @@ const { createUser, login } = require("../controllers/users");
 router.post("/signup", createUser);
 router.post("/signin", login);
 
-router.use("/users", userRouter);
+// Mixed route protection. Middleware declared per route.
 router.use("/items", clothingItemRouter);
+
+router.use("/users", userRouter);
 
 module.exports = router;

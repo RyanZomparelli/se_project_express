@@ -23,14 +23,6 @@ mongoose
     console.error(e);
   });
 
-// Temporary middleware for user authorization to create clothingItems.
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68ce00577cab308d9b75df8a",
-  };
-  next();
-});
-
 // Place this middleware before routes
 // Middleware to parse JSON from client when creating resources
 app.use(express.json());
