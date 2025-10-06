@@ -1,5 +1,6 @@
 // no-underscore-dangle: 0 means there is a linter exception for variables like _id
 // I'm using Airbnb's JavaScript style Guide in this project for linter configuration.
+// Ignore console.error but warn for console.log  "no-console": ["warn", { allow: ["error"] }]
 
 module.exports = {
   env: {
@@ -24,5 +25,6 @@ module.exports = {
   },
   rules: {
     "no-underscore-dangle": 0,
+    "no-console": ["warn", { allow: ["error"] }],
   },
 };
