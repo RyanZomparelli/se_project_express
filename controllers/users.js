@@ -102,7 +102,7 @@ const createUser = async (req, res) => {
     if (err.code === 11000) {
       return res
         .status(DUPLICATE_EMAIL)
-        .send({ message: "Email already in use. Please try again." });
+        .send({ message: "Email already in use" });
     }
     return res
       .status(INTERNAL_SERVER_ERROR)
@@ -155,10 +155,10 @@ const updateProfile = async (req, res) => {
     if (err.name === "DocumentNotFoundError") {
       return res
         .status(NOT_FOUND)
-        .send({ message: "Requested resource not found." });
+        .send({ message: "Requested resource not found" });
     }
     if (err.name === "CastError") {
-      return res.status(BAD_REQUEST).send({ message: "Invalid Data." });
+      return res.status(BAD_REQUEST).send({ message: "Invalid Data" });
     }
     if (err.name === "ValidationError") {
       return res.status(BAD_REQUEST).send({ message: "Invalid data" });

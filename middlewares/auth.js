@@ -14,9 +14,10 @@ module.exports = (req, res, next) => {
 
     const token = authorization.replace("Bearer ", "");
 
-    // (Synchronous) If a callback is not supplied, function acts synchronously.
-    // Returns the *payload decoded if the signature is valid and optional expiration,
-    // audience, or issuer are valid. If not, it will throw the error.
+    // (Synchronous) If a optional callback parameter is not supplied, function acts synchronously.
+    // Returns the *payload decoded(gets the user data from the token) if the
+    // signature is valid and optional expiration, audience, or issuer are valid.
+    // If not, it will throw the error.
     const payload = jwt.verify(token, JWT_SECRET);
     // Now we create a user object with authorization to be passed down and
     // handled in procted routes.
