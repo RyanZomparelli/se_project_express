@@ -9,6 +9,7 @@ const cors = require("cors");
 
 // internal imports
 const indexRouter = require("./routes");
+const errorHandler = require("./middlewares/error-handler");
 
 // Creating an 'instance' of an express app.
 const app = express();
@@ -35,6 +36,9 @@ app.use(express.urlencoded({ extended: true })); // Technically don't need this 
 // Entry point for routes. Otherwise I'd have to require all different routes here
 // like userRoutes and clothingItemRoutes ect.
 app.use("/", indexRouter);
+
+// Centralized error handling middleware.
+app.use(errorHandler);
 
 // Creating an environment variable for port with a default port to run the server on.
 const { PORT = 3001 } = process.env;

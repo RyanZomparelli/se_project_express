@@ -4,6 +4,10 @@ const BadRequestError = require("../utils/errors/bad-request-err");
 const NotFoundError = require("../utils/errors/not-found-err");
 const ForbiddenError = require("../utils/errors/forbidden-err");
 
+// The Key Difference between controllers and middleware is, middleware typically
+// processes requests and passes control along. Controllers typically end the
+// request-response cycle by sending a response but technically, they're both just
+// functions that can receive (req, res, next).
 const getItems = (req, res, next) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
