@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const { UNAUTHORIZED } = require("../utils/errors");
+const UnauthorizedError = require("../utils/errors/unauthorized-err");
 
 // Don't forget to add next to the arguments in middleware functions!
 module.exports = (req, res, next) => {
@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
   try {
     if (!authorization || !authorization.startsWith("Bearer ")) {
-      throw new Error("Authorization error");
+      throw new UnauthorizedError("Authorization error");
     }
 
     const token = authorization.replace("Bearer ", "");
@@ -24,7 +24,6 @@ module.exports = (req, res, next) => {
     req.user = payload;
     return next();
   } catch (err) {
-    console.error(err);
-    return res.status(UNAUTHORIZED).send({ message: err.message });
+    return next(err);
   }
 };

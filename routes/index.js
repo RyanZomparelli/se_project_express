@@ -4,7 +4,7 @@ const userRouter = require("./users");
 const clothingItemRouter = require("./clothingItems");
 const { createUser, login } = require("../controllers/users");
 const auth = require("../middlewares/auth");
-const { NOT_FOUND } = require("../utils/errors");
+const errorHandler = require("../middlewares/error-handler");
 
 // Public routes
 router.post("/signup", createUser);
@@ -16,10 +16,11 @@ router.use("/items", clothingItemRouter);
 // One protected route in routes/users.js
 router.use("/users", auth, userRouter);
 
-// Catch all middleware for non-existent routes. Handles any requests to endpoints
-// that don't exist.
-router.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Requested resource not found" });
-});
+// Centralized error handling middleware
+// The Key Difference between controllers and middleware is, middleware typically
+// processes requests and passes control along. Controllers typically end the
+// request-response cycle by sending a response but technically, they're both just
+// functions that can receive (req, res, next).
+router.use(errorHandler);
 
 module.exports = router;

@@ -1,41 +1,30 @@
 const ClothingItem = require("../models/clothingItem");
 
-const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-  FORBIDDEN,
-} = require("../utils/errors");
+const BadRequestError = require("../utils/errors/bad-request-err");
+const NotFoundError = require("../utils/errors/not-found-err");
+const ForbiddenError = require("../utils/errors/forbidden-err");
 
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
-const createItem = (req, res) => {
+const createItem = (req, res, next) => {
   const owner = req.user._id;
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+        return next(new BadRequestError("Invalid data"));
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   // Get the item id first
   const { id } = req.params;
   // Find the item before deleting it so you can compare it for authoriztion to the
@@ -49,31 +38,23 @@ const deleteItem = (req, res) => {
       // req.user._id is also an ObjectId object. Even if they have the same value,
       // they're different object instances
       if (item.owner.toString() !== req.user._id.toString()) {
-        return Promise.reject(new Error("Forbidden"));
+        return Promise.reject(new ForbiddenError("Forbidden"));
       }
       return ClothingItem.findByIdAndDelete(id);
     })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+        return next(new BadRequestError("Invalid data"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Requested resource not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
-      if (err.message === "Forbidden") {
-        return res.status(FORBIDDEN).send({ message: err.message });
-      }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   const { id } = req.params;
   // findByIdAndUpdate is a Mongoose method that takes an identifier and an object
   // with the properties that need to be updated. It can also take an optional options
@@ -81,7 +62,7 @@ const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     id,
     {
-      // in this case, likes is the property we are updating. Likes is an array in
+      // In this case, likes is the property we are updating. Likes is an array in
       // the ClothingItem schema that contains a 'set' of ObjectId's to prevent mutiple
       // likes from one user. $addToSet is a special Mongo query operator that Mongoose translates for us.
       // It checks whether the userId already exists and if not it adds it, and if
@@ -101,22 +82,17 @@ const likeItem = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+        return next(new BadRequestError("Invalid data"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Requested resource not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
-const unlikeItem = (req, res) => {
+const unlikeItem = (req, res, next) => {
   const { id } = req.params;
 
   ClothingItem.findByIdAndUpdate(
@@ -132,16 +108,12 @@ const unlikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+        return next(new BadRequestError("Invalid data"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Requested resource not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
