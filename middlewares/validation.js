@@ -56,7 +56,7 @@ const validateUserBody = celebrate({
       "string.empty": 'The "email" field must be filled in',
       "string.email": 'the "email" field must be a valid email',
     }),
-    password: Joi.string().required.messages({
+    password: Joi.string().required().messages({
       "string.empty": 'The "password" field must be filled in',
     }),
     name: Joi.string().required().min(2).max(30).messages({
@@ -77,7 +77,7 @@ const validateAuthentication = celebrate({
       "string.empty": 'The "email" field must be filled in',
       "string.email": 'the "email" field must be a valid email',
     }),
-    password: Joi.string().required.messages({
+    password: Joi.string().required().messages({
       "string.empty": 'The "password" field must be filled in',
     }),
   }),
