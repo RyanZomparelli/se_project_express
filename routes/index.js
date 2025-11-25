@@ -1,7 +1,7 @@
 // Express router
 const router = require("express").Router();
 
-//Endpoint routes
+// Endpoint routes
 const userRouter = require("./users");
 const clothingItemRouter = require("./clothingItems");
 
@@ -30,8 +30,8 @@ router.use("/users", auth, userRouter);
 
 // Catch all middleware for non-existent routes. Handles any requests to endpoints
 // that don't exist.
-router.use((req, res, next) => {
-  return next(new NotFoundError("Requested resource not found"));
-});
+router.use((req, res, next) =>
+  next(new NotFoundError("Requested resource not found"))
+);
 
 module.exports = router;

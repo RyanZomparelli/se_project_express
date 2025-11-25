@@ -17,9 +17,10 @@ const expressWinston = require("express-winston");
 // format, as well as Winston's generic printf method.
 const messageFormat = winston.format.combine(
   winston.format.timestamp(),
-  winston.format.printf(({ level, message, meta, timestamp }) => {
-    `${timestamp} ${level}: ${meta.error?.stack || message}`;
-  })
+  winston.format.printf(
+    ({ level, message, meta, timestamp }) =>
+      `${timestamp} ${level}: ${meta.error?.stack || message}`
+  )
 );
 
 // The request logger, with two different "transports". One transport

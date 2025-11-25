@@ -50,11 +50,10 @@ const getCurrentUser = (req, res, next) => {
       // These are predictable error names that come from the Mongoose library.
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Requested resource not found"));
-      } else {
-        // Default Error handling.
-        // Unexpected errors will become statusCode 500 in the error middleware.
-        next(err);
       }
+      // Default Error handling.
+      // Unexpected errors will become statusCode 500 in the error middleware.
+      return next(err);
     });
 };
 
@@ -109,9 +108,8 @@ const createUser = async (req, res, next) => {
     // return res
     //   .status(INTERNAL_SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server" });
-    else {
-      next(err);
-    }
+
+    return next(err);
   }
 };
 
