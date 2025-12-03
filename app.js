@@ -10,6 +10,12 @@ const cors = require("cors");
 //  on to the error handler but not to the controller. celebrate has a special
 // errors() middleware for sending errors to the client.
 const { errors } = require("celebrate");
+// When you use the dotenv package and add require('dotenv').config() to your code,
+// you gain access to this special object called process.env. Here's what happens:
+// - Environmental variables are stored outside your application code.
+// - process.env acts like a bridge to access these variables.
+// - Your application can read values like passwords or API keys without hardcoding them.
+require("dotenv").config();
 
 // internal imports
 const indexRouter = require("./routes");
