@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-// All my controllers(request handlers)
+// Controllers(request handlers)
 const { getCurrentUser, updateProfile } = require("../controllers/users");
 
 router.get("/me", getCurrentUser);

@@ -6,6 +6,8 @@ const bcrypt = require("bcryptjs");
  mongoose schemas with its validator property. */
 const validator = require("validator");
 
+const UnauthorizedError = require("../utils/errors/unauthorized-err");
+
 /* A schema is a blueprint for the resources that are going to be saved to the database.
    mongoose uses the schema to validate documents before they're saved. */
 const userSchema = new mongoose.Schema({
@@ -57,14 +59,14 @@ userSchema.statics.findUserByCredentials = async function findUserByCredentials(
     // Since findOne returns a Promise it's semantically correct to return a rejected
     // promise. With the error object, It's functionally the same as throwing an error.
     // Any error's here will be caught in the catch block of the loginUser controller.
-    return Promise.reject(new Error("Incorrect email or password"));
+    return Promise.reject(new UnauthorizedError("Incorrect email or password"));
   }
   // Password is the login form data and user.password is the hashed password in the DB.
   // Returns a promise which resolves to a boolean value.
   const matched = await bcrypt.compare(password, user.password);
 
   if (!matched) {
-    return Promise.reject(new Error("Incorrect email or password"));
+    return Promise.reject(new UnauthorizedError("Incorrect email or password"));
   }
 
   // If all is well return the user for the controller to handle.

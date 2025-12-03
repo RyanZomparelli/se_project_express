@@ -1,6 +1,10 @@
 const router = require("express").Router();
-const auth = require("../middlewares/auth");
 
+// Middlewares
+const auth = require("../middlewares/auth");
+const { validateCardBody, validateId } = require("../middlewares/validation");
+
+// Controllers
 const {
   getItems,
   createItem,
@@ -15,9 +19,13 @@ const {
 router.get("/", getItems);
 
 // Protected Routes
-router.post("/", auth, createItem);
-router.delete("/:id", auth, deleteItem);
-router.put("/:id/likes", auth, likeItem);
-router.delete("/:id/likes", auth, unlikeItem);
+// The Key Difference between controllers and middleware is, middleware typically
+// processes requests and passes control along. Controllers typically end the
+// request-response cycle by sending a response but technically, they're both just
+// functions that can receive (req, res, next).
+router.post("/", auth, validateCardBody, createItem);
+router.delete("/:id", auth, validateId, deleteItem);
+router.put("/:id/likes", auth, validateId, likeItem);
+router.delete("/:id/likes", auth, validateId, unlikeItem);
 
 module.exports = router;
