@@ -36,18 +36,20 @@ const validateEmail = (value, helpers) => {
 };
 
 const validateCardBody = celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30).messages({
-      "string.min": 'The minimum length of the "name" field is 2',
-      "string.max": 'The maximum length of the "name" field is 30',
-      "string.empty": 'The "name" field must be filled in',
-    }),
+  body: Joi.object()
+    .keys({
+      name: Joi.string().required().min(2).max(30).messages({
+        "string.min": 'The minimum length of the "name" field is 2',
+        "string.max": 'The maximum length of the "name" field is 30',
+        "string.empty": 'The "name" field must be filled in',
+      }),
 
-    imageUrl: Joi.string().required().custom(validateURL).messages({
-      "string.empty": 'The "imageUrl" field must be filled in',
-      "string.uri": 'the "imageUrl" field must be a valid url',
-    }),
-  }),
+      imageUrl: Joi.string().required().custom(validateURL).messages({
+        "string.empty": 'The "imageUrl" field must be filled in',
+        "string.uri": 'the "imageUrl" field must be a valid url',
+      }),
+    })
+    .unknown(true),
 });
 
 const validateUserBody = celebrate({
@@ -64,7 +66,7 @@ const validateUserBody = celebrate({
       "string.max": 'The maximum length of the "name" field is 30',
       "string.empty": 'The "name" field must be filled in',
     }),
-    avatarUrl: Joi.string().required().custom(validateURL).messages({
+    avatar: Joi.string().required().custom(validateURL).messages({
       "string.empty": 'The "avatarUrl" field must be filled in',
       "string.uri": 'the "avatarUrl" field must be a valid url',
     }),
