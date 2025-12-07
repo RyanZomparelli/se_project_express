@@ -60,7 +60,7 @@ const getCurrentUser = (req, res, next) => {
 const createUser = async (req, res, next) => {
   // Create a user with the JSON data sent from the client parsed into a JS object
   // with the middleware function in app.js called express.json()
-  const { email, password, name, avatar } = req.body;
+  const { email, password, name, avatar, zip } = req.body;
   try {
     // Use the bcrypt library to hash the password entered by the user at signup.
     // The hash() method generates a completely random character set known as a 'salt'
@@ -75,6 +75,7 @@ const createUser = async (req, res, next) => {
       password: hash,
       name,
       avatar,
+      zip,
     });
     // Send the user object to the client but omit the hashed password.
     return res.status(201).send({
@@ -83,6 +84,7 @@ const createUser = async (req, res, next) => {
         email: user.email,
         name: user.name,
         avatar: user.avatar,
+        zip: user.zip,
       },
     });
   } catch (err) {

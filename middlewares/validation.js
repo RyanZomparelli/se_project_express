@@ -70,6 +70,10 @@ const validateUserBody = celebrate({
       "string.empty": 'The "avatarUrl" field must be filled in',
       "string.uri": 'the "avatarUrl" field must be a valid url',
     }),
+    zip: Joi.string().required().min(5).max(5).messages({
+      "string.min": 'The minimum length of the "zip" field is 5',
+      "string.max": 'The maximum length of the "zip" field is 5',
+    }),
   }),
 });
 

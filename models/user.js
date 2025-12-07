@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema({
       message: "This is an invalid url. Please try again.",
     },
   },
+  zip: {
+    required: true,
+    type: String,
+    minlength: 5,
+    maxlength: 5,
+  },
 });
 
 /* Declaring a static method on the statics object of the User model.
