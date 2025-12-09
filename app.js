@@ -47,6 +47,13 @@ app.use(express.urlencoded({ extended: true })); // Technically don't need this 
 // Enable the request logger before all route handlers.
 app.use(requestLogger);
 
+// Crash test for review. Remove after code review.
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 // Entry point for routes. Otherwise I'd have to require all different routes here
 // like userRoutes and clothingItemRoutes ect.
 app.use("/", indexRouter);

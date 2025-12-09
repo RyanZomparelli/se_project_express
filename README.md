@@ -8,6 +8,22 @@ A REST API (Representational State Transfer) is a design pattern for structuring
 web services. It uses HTTP methods like GET, POST, PUT, PATCH, DELETE etc. to perform
 operations on resources in the database.
 
+## 🔗 Accessing the Application
+
+**Production domain (frontend app):** https://wtwr.host2go.net
+
+**Frontend GitHub repo:** https://github.com/RyanZomparelli/se_project_react
+
+**API base URL (backend):** https://api.wtwr.host2go.net
+
+## 🎥 Project Pitch Videos
+
+Check out these videos, where I describe my project
+and some challenges I faced while building it:
+
+- **UI & Frontend Overview (5 min):** https://youtu.be/rKyM2rYG5Po
+- **Backend & API Overview (5 min):** Coming Soon
+
 ## 🛠 Tech Stack
 
 Framework: Express.js
