@@ -29,6 +29,7 @@ const validateEmail = (value, helpers) => {
   if (validator.isEmail(value)) {
     return value;
   }
+  // The celebrate function automatically handles the next() call for you.
   // If the request doesn’t pass the described validation, celebrate will pass
   // it on to the error handler but not to the controller. celebrate has a special
   // errors() middleware for sending errors to the client.
@@ -89,6 +90,20 @@ const validateAuthentication = celebrate({
   }),
 });
 
+const validateUpdateProfile = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30).messages({
+      "string.min": 'The minimum length of the "name" field is 2',
+      "string.max": 'The maximum length of the "name" field is 30',
+      "string.empty": 'The "name" field must be filled in',
+    }),
+    avatar: Joi.string().required().custom(validateURL).messages({
+      "string.empty": 'The "avatarUrl" field must be filled in',
+      "string.uri": 'the "avatarUrl" field must be a valid url',
+    }),
+  }),
+});
+
 // Multiple Validation Points:
 const validateId = celebrate({
   // On top of validating the request body, celebrate also allows you to validate headers, parameters, or req.query.
@@ -102,6 +117,7 @@ module.exports = {
   validateCardBody,
   validateUserBody,
   validateAuthentication,
+  validateUpdateProfile,
   validateId,
 };
 
