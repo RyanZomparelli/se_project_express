@@ -10,7 +10,7 @@ module.exports = (err, req, res, next) => {
   });
 };
 
-/** You call next() without an argument whenever you need to push our
+/** You call next() without an argument whenever you need to push your
  * request to the next step in the process. However, if we pass an argument to
  * next(), it will have a completely different effect, and the request will go
  * to the error handler instead.
